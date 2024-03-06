@@ -1,15 +1,14 @@
 package org.seokkalae.musicjan.utils;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.Duration;
 
 public class Converter {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static String toFormattedDuration(Long duration) {
-        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(duration), ZoneId.systemDefault());
-        return dateTime.format(formatter);
+        Duration trueDuration = Duration.ofMillis(duration);
+        long hours = trueDuration.toHours();
+        long minutes = trueDuration.toMinutesPart();
+        long seconds = trueDuration.toSecondsPart();
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
