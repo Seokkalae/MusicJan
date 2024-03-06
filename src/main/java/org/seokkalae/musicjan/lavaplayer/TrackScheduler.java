@@ -34,9 +34,17 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public String skip() {
-        var title = player.getPlayingTrack().getInfo().title;
+        String title = "";
+        if (player.getPlayingTrack() != null)
+            title = player.getPlayingTrack().getInfo().title;
         player.stopTrack();
         return title;
+    }
+
+    public void stop() {
+        queue.clear();
+        log.info("queue cleared");
+        skip();
     }
 
     public int getQueueSize() {

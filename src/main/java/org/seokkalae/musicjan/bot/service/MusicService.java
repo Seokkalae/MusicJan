@@ -22,7 +22,7 @@ public class MusicService {
     private final static Logger log = LoggerFactory.getLogger(MusicService.class);
     private final AudioPlayerManager audioPlayerManager;
     private final ApplicationContext context;
-    private Map<Long, GuildMusicManager> guildMusicManagers = new HashMap<>();
+    private final Map<Long, GuildMusicManager> guildMusicManagers = new HashMap<>();
 
     public MusicService(
             AudioPlayerManager audioPlayerManager,
@@ -95,6 +95,18 @@ public class MusicService {
 
         String response = event.getMember().getEffectiveName() + " скипнул трек **"
                 + skippedTrack + "**";
+        event.getHook().sendMessage(response).queue();
+    }
+
+    public void stop(SlashCommandInteractionEvent event) {
+        var guildAudioManager = getGuildMusicManager(event.getGuild());
+        event.deferReply().queue();
+        if (guildAudioManager.getTrackScheduler().getQueueSize() == 0) {
+            event.getHook().sendMessage("Очередь уже пуста").queue();
+            return;
+        }
+        guildAudioManager.getTrackScheduler().stop();
+        String response = event.getMember().getEffectiveName() + " остановил бота";
         event.getHook().sendMessage(response).queue();
     }
 }
