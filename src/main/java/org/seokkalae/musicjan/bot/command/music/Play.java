@@ -31,7 +31,7 @@ public class Play implements ICommand {
     @Override
     public List<OptionData> getOptions() {
         List<OptionData> options = new ArrayList<>();
-        options.add(new OptionData(OptionType.STRING, "url", "Ссылка на трек", true));
+        options.add(new OptionData(OptionType.STRING, "track", "Ссылка или название трека", true));
         return options;
     }
 
@@ -52,7 +52,7 @@ public class Play implements ICommand {
                     .queue();
             return;
         }
-        var url = event.getOption("url").getAsString();
-        musicService.play(event, url);
+        var track = event.getOption("track").getAsString();
+        musicService.play(event, track);
     }
 }

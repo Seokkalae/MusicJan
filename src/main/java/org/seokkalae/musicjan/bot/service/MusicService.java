@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.seokkalae.musicjan.lavaplayer.GuildMusicManager;
 import org.seokkalae.musicjan.utils.Converter;
+import org.seokkalae.musicjan.utils.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -44,10 +45,17 @@ public class MusicService {
         });
     }
 
-    public void play(SlashCommandInteractionEvent event, String trackURL) {
-        var guildAudioManager = getGuildMusicManager(event.getGuild());
+    private String createTrackSearchType(String track) {
+        if (Validator.isValidUrl(track)) {
+            return track;
+        }
+        return "ytsearch:" + track;
+    }
 
-        audioPlayerManager.loadItemOrdered(guildAudioManager, trackURL, new AudioLoadResultHandler() {
+    public void play(SlashCommandInteractionEvent event, String track) {
+        var guildAudioManager = getGuildMusicManager(event.getGuild());
+        var trackSearch = createTrackSearchType(track);
+        audioPlayerManager.loadItemOrdered(guildAudioManager, trackSearch, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
                 guildAudioManager.getTrackScheduler().queue(audioTrack);
@@ -60,6 +68,10 @@ public class MusicService {
 
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
+                if (audioPlaylist.isSearchResult()) {
+                    trackLoaded(audioPlaylist.getTracks().getFirst());
+                    return;
+                }
                 for (var audioTrack : audioPlaylist.getTracks())
                     guildAudioManager.getTrackScheduler().queue(audioTrack);
                 event.deferReply().queue();
