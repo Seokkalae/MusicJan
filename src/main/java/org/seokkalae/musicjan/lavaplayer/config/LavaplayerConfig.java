@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Scope;
 public class LavaplayerConfig {
     @Bean
     public AudioPlayerManager audioPlayerManager() {
-        return new DefaultAudioPlayerManager();
+        var defaultAudioPlayerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(defaultAudioPlayerManager);
+        return defaultAudioPlayerManager;
     }
 }

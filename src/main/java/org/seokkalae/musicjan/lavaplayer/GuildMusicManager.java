@@ -31,10 +31,6 @@ public class GuildMusicManager {
         return trackScheduler;
     }
 
-    public final AudioPlayer getAudioPlayer() {
-        return audioPlayer;
-    }
-
     public final AudioPlayerSendHandler getAudioPlayerSendHandler() {
         return audioPlayerSendHandler;
     }
