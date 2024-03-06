@@ -36,7 +36,7 @@ public class MusicService {
         return context.getBean(GuildMusicManager.class);
     }
 
-    public GuildMusicManager getGuildMusicManager(Guild guild) {
+    private GuildMusicManager getGuildMusicManager(Guild guild) {
         return guildMusicManagers.computeIfAbsent(guild.getIdLong(), guildId -> {
             var musicManager = getPlayerService();
             guild.getAudioManager().setSendingHandler(musicManager.getAudioPlayerSendHandler());
@@ -82,5 +82,19 @@ public class MusicService {
                 event.reply("Ошибка загрузки.").queue();
             }
         });
+    }
+
+    public void skip(SlashCommandInteractionEvent event) {
+        var guildAudioManager = getGuildMusicManager(event.getGuild());
+        event.deferReply().queue();
+        if (guildAudioManager.getTrackScheduler().getQueueSize() == 0) {
+            event.getHook().sendMessage("Очередь уже пуста").queue();
+            return;
+        }
+        String skippedTrack = guildAudioManager.getTrackScheduler().skip();
+
+        String response = event.getMember().getEffectiveName() + " скипнул трек **"
+                + skippedTrack + "**";
+        event.getHook().sendMessage(response).queue();
     }
 }

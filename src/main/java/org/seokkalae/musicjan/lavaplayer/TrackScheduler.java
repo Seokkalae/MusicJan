@@ -23,15 +23,20 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.mayStartNext)
-            player.startTrack(queue.poll(), false);
+        player.startTrack(queue.poll(), false);
     }
 
     public void queue(AudioTrack track) {
-        if(!player.startTrack(track, true)){
+        if (!player.startTrack(track, true)) {
             queue.offer(track);
             log.info("added to queue. current length {}", queue.size());
         }
+    }
+
+    public String skip() {
+        var title = player.getPlayingTrack().getInfo().title;
+        player.stopTrack();
+        return title;
     }
 
     public int getQueueSize() {
