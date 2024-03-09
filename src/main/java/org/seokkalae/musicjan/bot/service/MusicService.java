@@ -23,7 +23,7 @@ public class MusicService {
     private final static Logger log = LoggerFactory.getLogger(MusicService.class);
     private final AudioPlayerManager audioPlayerManager;
     private final ApplicationContext context;
-    private final Map<Long, GuildMusicManager> guildMusicManagers = new HashMap<>();
+    public final Map<Long, GuildMusicManager> guildMusicManagers = new HashMap<>();
 
     public MusicService(
             AudioPlayerManager audioPlayerManager,
@@ -33,13 +33,13 @@ public class MusicService {
         this.context = context;
     }
 
-    private GuildMusicManager getPlayerService() {
-        return context.getBean(GuildMusicManager.class);
+    private GuildMusicManager getPlayerService(Guild guild) {
+        return context.getBean(GuildMusicManager.class, audioPlayerManager, guild);
     }
 
     private GuildMusicManager getGuildMusicManager(Guild guild) {
         return guildMusicManagers.computeIfAbsent(guild.getIdLong(), guildId -> {
-            var musicManager = getPlayerService();
+            var musicManager = getPlayerService(guild);
             guild.getAudioManager().setSendingHandler(musicManager.getAudioPlayerSendHandler());
             return musicManager;
         });

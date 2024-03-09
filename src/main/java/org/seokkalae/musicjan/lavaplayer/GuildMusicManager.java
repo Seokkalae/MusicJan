@@ -2,6 +2,7 @@ package org.seokkalae.musicjan.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -17,11 +18,12 @@ public class GuildMusicManager {
     private final AudioPlayerSendHandler audioPlayerSendHandler;
 
     public GuildMusicManager(
-            AudioPlayerManager audioPlayerManager
+            AudioPlayerManager audioPlayerManager,
+            Guild guild
     ) {
         this.audioPlayer = audioPlayerManager.createPlayer();
         this.trackScheduler = new TrackScheduler(audioPlayer);
-        this.audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
+        this.audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer, guild);
         log.info("{}",this.audioPlayer);
         log.info("{}",this.trackScheduler);
         log.info("{}",this.audioPlayerSendHandler);
