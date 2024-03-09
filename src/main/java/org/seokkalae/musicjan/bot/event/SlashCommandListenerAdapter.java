@@ -1,4 +1,4 @@
-package org.seokkalae.musicjan.bot.event.manager;
+package org.seokkalae.musicjan.bot.event;
 
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
