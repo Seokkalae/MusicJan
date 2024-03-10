@@ -98,27 +98,22 @@ public class MusicService {
 
     public void skip(SlashCommandInteractionEvent event) {
         var guildAudioManager = getGuildMusicManager(event.getGuild());
+        var skippedTrack = guildAudioManager.getTrackScheduler().skip();
         event.deferReply().queue();
-        if (guildAudioManager.getTrackScheduler().getQueueSize() == 0) {
-            event.getHook().sendMessage("Очередь уже пуста").queue();
-            return;
+        if (!skippedTrack.isBlank()) {
+            String response = event.getMember().getEffectiveName() + " скипнул трек **"
+                    + skippedTrack + "**";
+            event.getHook().sendMessage(response).queue();
+        } else {
+            event.getHook().deleteOriginal().queue();
         }
-        String skippedTrack = guildAudioManager.getTrackScheduler().skip();
-
-        String response = event.getMember().getEffectiveName() + " скипнул трек **"
-                + skippedTrack + "**";
-        event.getHook().sendMessage(response).queue();
     }
 
     public void stop(SlashCommandInteractionEvent event) {
         var guildAudioManager = getGuildMusicManager(event.getGuild());
         event.deferReply().queue();
-        if (guildAudioManager.getTrackScheduler().getQueueSize() == 0) {
-            event.getHook().sendMessage("Очередь уже пуста").queue();
-            return;
-        }
         guildAudioManager.getTrackScheduler().stop();
-        String response = event.getMember().getEffectiveName() + " остановил бота";
+        var response = event.getMember().getEffectiveName() + " остановил бота";
         event.getHook().sendMessage(response).queue();
     }
 }
