@@ -1,0 +1,38 @@
+name: Deploy app
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  prepare:
+    runs-on: self-hosted
+    steps:
+      - name: Stop and remove containers with volume and networks
+        run: if test -f docker-compose.yaml; then echo 'docker-compose exist'; docker-compose up; fi
+      - name: Remove unused data
+        run: docker system prune -a -f
+
+  deploy:
+    runs-on: self-hosted
+    needs: prepare
+    env:
+      TOKEN: ${{ secrets.BOT_TOKEN }}
+      YOUTUBE_EMAIL: ${{ secrets.YOUTUBE_EMAIL }}
+      YOUTUBE_PASSWORD: ${{ secrets.YOUTUBE_PASSWORD }}
+    steps:
+      - name: clean up
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: docker-compose
+        run: docker-compose up -d --force-recreate
