@@ -21,10 +21,6 @@
             <id>jitpack</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
-            <id>lavaplayer-dev</id>
-            <url>https://maven.lavalink.dev/snapshots</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -57,7 +53,7 @@
         <dependency>
             <groupId>dev.arbjerg</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1969d58cfb8ddaf3499a49a5d9eaf13cdab8159a-SNAPSHOT</version>
+            <version>2.1.1</version>
         </dependency>
 
     </dependencies>
