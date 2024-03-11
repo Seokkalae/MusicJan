@@ -1,7 +1,7 @@
 spring:
     main:
         web-application-type: NONE
-token: token
+token: "${botToken:}"
 youtube:
-    email: ''
-    password: ''
+    email: "${youtubeEmail:}"
+    password: "${youtubePassword:}"
