@@ -1,7 +1,9 @@
-spring:
-    main:
-        web-application-type: NONE
 token: "${botToken:}"
 youtube:
     email: "${youtubeEmail:}"
     password: "${youtubePassword:}"
+management:
+    endpoints:
+        web:
+            exposure:
+                include: ["prometheus"]

@@ -12,7 +12,26 @@ services:
       TOKEN: ${TOKEN}
       YOUTUBE_EMAIL: ${YOUTUBE_EMAIL}
       YOUTUBE_PASSWORD: ${YOUTUBE_PASSWORD}
-    env_file:
-      - .env
     networks:
       - default
+
+  prometheus:
+    image: prom/prometheus:v2.45.4
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:10.0.12
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - ./config/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./config/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
